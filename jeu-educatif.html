@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jeux éducatifs — Le chien malin</title>
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/game.css" />
+  <link rel="stylesheet" href="css/mascot.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <h1 class="title">🐶 Le chien malin</h1>
+      <p class="subtitle">Travaille et amuse-toi !</p>
+    </header>
+
+    <!-- ÉCRAN ACCUEIL -->
+    <section id="screen-home" class="screen active">
+      <div class="card center">
+        <div id="mascot-home" class="mascot mascot-idle" aria-hidden="true"></div>
+        <h2>Choisis une matière</h2>
+        <div class="theme-grid" id="theme-grid"></div>
+        <div id="mode-options" class="hidden">
+          <h3 id="selected-theme-title"></h3>
+          <div class="btn-group">
+            <button class="btn btn-primary" data-action="start-training">Entraînement libre</button>
+            <button class="btn btn-secondary" data-action="start-challenge">Défi (niveaux)</button>
+          </div>
+          <div id="training-options" class="hidden"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ÉCRAN JEU -->
+    <section id="screen-game" class="screen">
+      <div class="game-header">
+        <button class="btn-home" data-action="go-home" title="Retour à l'accueil">🏠</button>
+        <div class="stat"><span class="label">Matière</span><span id="game-theme-title" class="value">—</span></div>
+        <div class="stat"><span class="label">Score</span><span id="score" class="value">0</span></div>
+        <div class="stat"><span class="label">Combo</span><span id="combo" class="value">0</span></div>
+        <div class="stat"><span class="label">Vies</span><span id="lives" class="value">❤️❤️❤️</span></div>
+        <div class="stat"><span class="label">Niveau</span><span id="level" class="value">1</span></div>
+      </div>
+      <div class="timer-bar"><div id="timer-fill" class="timer-fill"></div></div>
+
+      <div class="game-body">
+        <div class="question-card">
+          <div id="question" class="question">? × ? = ?</div>
+          <div id="answer-area" class="answer-area"></div>
+          <div id="feedback" class="feedback"></div>
+        </div>
+        <div id="mascot-game" class="mascot mascot-idle" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <!-- ÉCRAN RÉSULTAT -->
+    <section id="screen-result" class="screen">
+      <div class="card center">
+        <div id="mascot-result" class="mascot mascot-idle" aria-hidden="true"></div>
+        <h2 id="result-title">Partie terminée !</h2>
+        <div class="stars" id="stars"></div>
+        <p id="result-score" class="big">Score : 0</p>
+        <p id="result-accuracy">Précision : 0%</p>
+        <div id="session-stats" class="session-stats"></div>
+        <div id="errors-list" class="errors-list"></div>
+        <div class="btn-group">
+          <button class="btn btn-primary" data-action="replay">Rejouer</button>
+          <button class="btn btn-secondary" data-action="go-home">Menu</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="js/mascot.js"></script>
+  <script src="js/questions.js"></script>
+  <script src="js/core/engine.js"></script>
+  <script src="js/core/ui.js"></script>
+  <script src="js/themes/multiplication/index.js"></script>
+  <script src="js/themes/orthographe/index.js"></script>
+  <script src="js/themes/conjugaison/index.js"></script>
+  <script src="js/themes/anglais/index.js"></script>
+  <script src="js/themes/logique/index.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
