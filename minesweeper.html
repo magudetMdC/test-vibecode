@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Démineur Cœurs 30x30</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #1a1a2e; color: #eee; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+  h1 { margin: 0 0 10px; color: #ff6b9d; }
+  .controls { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; justify-content: center; }
+  button { background: #ff6b9d; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+  button:hover { background: #ff4d8d; }
+  select, input { padding: 6px; border-radius: 6px; border: 1px solid #555; background: #222; color: #eee; }
+  .status { font-size: 18px; margin: 8px 0; }
+  #board { display: grid; grid-template-columns: repeat(30, 20px); gap: 1px; background: #333; padding: 4px; border-radius: 8px; }
+  .cell { width: 20px; height: 20px; background: #4a4a6a; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; cursor: pointer; user-select: none; }
+  .cell.revealed { background: #2a2a4a; }
+  .cell.flagged { background: #6a4a6a; }
+  .cell.heart { background: #ff4d6d; color: white; }
+  .n1 { color: #6bf; }
+  .n2 { color: #6f6; }
+  .n3 { color: #f66; }
+  .n4 { color: #66f; }
+  .n5 { color: #f6f; }
+  .n6 { color: #6ff; }
+  .n7 { color: #fff; }
+  .n8 { color: #aaa; }
+  .info { font-size: 12px; opacity: 0.7; margin-top: 8px; }
+</style>
+</head>
+<body>
+  <h1>💖 Démineur Cœurs 30×30</h1>
+  <div class="controls">
+    <label>Cœurs (bombes): <input type="number" id="mines" value="150" min="1" max="899"></label>
+    <button id="newGame">Nouvelle partie</button>
+    <button id="revealAll">Révéler tout</button>
+  </div>
+  <div class="status" id="status">Clic gauche = révéler, clic droit = drapeau</div>
+  <div id="board"></div>
+  <div class="info">Les bombes sont des cœurs 💖. Trouve toutes les cases sans cœur.</div>
+
+<script>
+const SIZE = 30;
+let board = [];
+let revealed = [];
+let flagged = [];
+let gameOver = false;
+let won = false;
+let minesCount = 150;
+let revealedCount = 0;
+let firstClick = true;
+
+function idx(r,c){ return r*SIZE+c; }
+function inBounds(r,c){ return r>=0 && r<SIZE && c>=0 && c<SIZE; }
+
+function init() {
+  minesCount = Math.min(Math.max(parseInt(document.getElementById('mines').value)||150,1), SIZE*SIZE-1);
+  board = Array(SIZE*SIZE).fill(0);
+  revealed = Array(SIZE*SIZE).fill(false);
+  flagged = Array(SIZE*SIZE).fill(false);
+  gameOver = false; won = false; revealedCount = 0; firstClick = true;
+  render();
+  document.getElementById('status').textContent = 'Clic gauche = révéler, clic droit = drapeau';
+}
+
+function placeMines(safeR, safeC) {
+  // safe zone 3x3 around first click
+  const safe = new Set();
+  for(let dr=-1; dr<=1; dr++) for(let dc=-1; dc<=1; dc++){
+    const r=safeR+dr, c=safeC+dc;
+    if(inBounds(r,c)) safe.add(idx(r,c));
+  }
+  let placed = 0;
+  while(placed < minesCount) {
+    const i = Math.floor(Math.random()*SIZE*SIZE);
+    if(safe.has(i)) continue;
+    if(board[i] === -1) continue;
+    board[i] = -1; // heart
+    placed++;
+  }
+  // compute numbers
+  for(let r=0;r<SIZE;r++) for(let c=0;c<SIZE;c++){
+    if(board[idx(r,c)]===-1) continue;
+    let n=0;
+    for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){
+      if(dr===0&&dc===0) continue;
+      const nr=r+dr, nc=c+dc;
+      if(inBounds(nr,nc) && board[idx(nr,nc)]===-1) n++;
+    }
+    board[idx(r,c)] = n;
+  }
+}
+
+function reveal(r,c) {
+  if(gameOver || won) return;
+  if(!inBounds(r,c)) return;
+  const i=idx(r,c);
+  if(revealed[i] || flagged[i]) return;
+  if(firstClick) { placeMines(r,c); firstClick=false; }
+  if(board[i]===-1) {
+    // hit heart
+    revealed[i]=true;
+    gameOver=true;
+    render();
+    document.getElementById('status').textContent = '💥 Touché un cœur ! Partie perdue.';
+    return;
+  }
+  // flood fill
+  const stack=[[r,c]];
+  while(stack.length){
+    const [cr,cc]=stack.pop();
+    const ci=idx(cr,cc);
+    if(revealed[ci]) continue;
+    revealed[ci]=true;
+    revealedCount++;
+    if(board[ci]===0){
+      for(let dr=-1;dr<=1;dr++) for(let dc=-1;dc<=1;dc++){
+        if(dr===0&&dc===0) continue;
+        const nr=cr+dr, nc=cc+dc;
+        if(inBounds(nr,nc)){
+          const ni=idx(nr,nc);
+          if(!revealed[ni] && !flagged[ni] && board[ni]!==-1) stack.push([nr,nc]);
+        }
+      }
+    }
+  }
+  checkWin();
+  render();
+}
+
+function toggleFlag(r,c) {
+  if(gameOver || won) return;
+  if(!inBounds(r,c)) return;
+  const i=idx(r,c);
+  if(revealed[i]) return;
+  flagged[i]=!flagged[i];
+  render();
+}
+
+function checkWin() {
+  const total = SIZE*SIZE;
+  const hearts = minesCount;
+  if(revealedCount === total - hearts) {
+    won=true;
+    document.getElementById('status').textContent = '🎉 Gagné ! Tous les cœurs évités.';
+  }
+}
+
+function render() {
+  const boardEl = document.getElementById('board');
+  boardEl.innerHTML = '';
+  for(let r=0;r<SIZE;r++) for(let c=0;c<SIZE;c++){
+    const i=idx(r,c);
+    const cell=document.createElement('div');
+    cell.className='cell';
+    if(revealed[i]) {
+      cell.classList.add('revealed');
+      if(board[i]===-1) { cell.classList.add('heart'); cell.textContent='💖'; }
+      else if(board[i]>0) { cell.textContent=board[i]; cell.classList.add('n'+board[i]); }
+    } else if(flagged[i]) {
+      cell.classList.add('flagged');
+      cell.textContent='🚩';
+    }
+    if(gameOver && board[i]===-1 && !revealed[i]) {
+      cell.classList.add('heart'); cell.textContent='💖';
+    }
+    cell.addEventListener('click', ()=>reveal(r,c));
+    cell.addEventListener('contextmenu', (e)=>{ e.preventDefault(); toggleFlag(r,c); });
+    boardEl.appendChild(cell);
+  }
+}
+
+document.getElementById('newGame').addEventListener('click', init);
+document.getElementById('revealAll').addEventListener('click', ()=>{
+  for(let i=0;i<SIZE*SIZE;i++) revealed[i]=true;
+  gameOver=true;
+  render();
+});
+init();
+</script>
+</body>
+</html>
