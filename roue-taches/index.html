@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#FFF9F2">
+  <meta name="description" content="La roue des tâches de la famille : chacun tourne la roue, la roue choisit sa tâche de la semaine.">
+  <title>Roue des tâches — la roue de la semaine</title>
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/roue.css">
+</head>
+
+<body>
+  <a class="lien-evitement" href="#pupitre">Aller au bouton Tourner</a>
+
+  <!-- EN-TÊTE -->
+  <header class="entete">
+    <div class="entete-marque">
+      <span class="entete-logo" aria-hidden="true">🎡</span>
+      <div>
+        <h1>La roue des tâches</h1>
+        <p id="entete-semaine" class="entete-semaine">Semaine du …</p>
+      </div>
+    </div>
+
+    <div class="entete-outils">
+      <p id="badge-tour" class="badge-tour">Tour 1 / 4</p>
+      <button id="btn-son" class="bouton-icone" type="button" aria-pressed="true"
+        title="Couper le son">
+        <span id="icone-son" aria-hidden="true">🔊</span>
+        <span class="sr-only">Son</span>
+      </button>
+      <button id="btn-confettis" class="bouton-icone" type="button" aria-pressed="true"
+        title="Couper les confettis">
+        <span id="icone-confettis" aria-hidden="true">✨</span>
+        <span class="sr-only">Confettis</span>
+      </button>
+      <button id="btn-editer" class="bouton-icone" type="button" title="Modifier les tâches">
+        <span aria-hidden="true">✏️</span>
+        <span class="sr-only">Modifier les tâches</span>
+      </button>
+      <button id="btn-recommencer" class="bouton-icone" type="button" title="Recommencer la semaine">
+        <span aria-hidden="true">↺</span>
+        <span class="sr-only">Recommencer la semaine</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- PLATEAU -->
+  <main class="plateau">
+    <section class="zone-roue" aria-labelledby="titre-roue">
+      <h2 id="titre-roue" class="sr-only">La roue des tâches</h2>
+
+      <div class="roue-cadre">
+        <div id="aiguille" class="aiguille" aria-hidden="true"></div>
+        <svg id="roue" class="roue" viewBox="0 0 400 400" role="img" aria-labelledby="roue-label">
+          <title id="roue-label">Roue des tâches</title>
+          <g id="roue-groupe"></g>
+        </svg>
+        <div class="moyeu" aria-hidden="true">🎡</div>
+      </div>
+
+      <p class="indice">La roue choisit pour toi. Une tâche tirée ne revient pas.</p>
+    </section>
+
+    <section id="pupitre" class="pupitre" aria-labelledby="titre-pupitre">
+      <h2 id="titre-pupitre" class="sr-only">Le pupitre de la roue</h2>
+
+      <p id="annonce" class="annonce" aria-live="polite">Prêt à tourner ?</p>
+
+      <button id="btn-tourner" class="bouton-principal" type="button">TOURNER</button>
+      <button id="btn-annuler" class="bouton-secondaire" type="button" disabled>
+        ↶ Annuler le dernier tour
+      </button>
+
+      <ol id="liste-tours" class="liste-tours" aria-label="Attributions de la semaine"></ol>
+
+      <p id="restantes" class="restantes"></p>
+    </section>
+  </main>
+
+  <!-- MESSAGE FLOTTANT -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- BILAN DE LA SEMAINE -->
+  <div id="bilan" class="voile" hidden>
+    <div class="bilan" role="dialog" aria-modal="true" aria-labelledby="bilan-titre">
+      <p class="bilan-emoji" aria-hidden="true">🎉</p>
+      <h2 id="bilan-titre">La semaine est répartie !</h2>
+      <p id="bilan-sous-titre" class="bilan-sous-titre"></p>
+
+      <div id="bilan-grille" class="bilan-grille"></div>
+
+      <div id="bilan-non-attribuees" class="bilan-non-attribuees"></div>
+
+      <div class="bilan-actions">
+        <button id="btn-bilan-fermer" class="bouton-secondaire" type="button">Voir la roue</button>
+        <button id="btn-bilan-nouvelle" class="bouton-principal" type="button">Nouvelle semaine</button>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="confettis" class="confettis" aria-hidden="true"></canvas>
+
+  <!-- ÉDITEUR DE TÂCHES -->
+  <div id="editeur" class="voile" hidden>
+    <div class="editeur" role="dialog" aria-modal="true" aria-labelledby="editeur-titre"
+      aria-describedby="editeur-aide">
+      <h2 id="editeur-titre">Les tâches de la roue</h2>
+      <p id="editeur-aide" class="editeur-aide">
+        Entre 5 et 8 tâches. Une tâche ne peut être prise que par une personne.
+      </p>
+
+      <ul id="editeur-liste" class="editeur-liste"></ul>
+
+      <button id="btn-ajouter-tache" class="bouton-secondaire" type="button">
+        + Ajouter une tâche
+      </button>
+
+      <p id="editeur-message" class="editeur-message" role="status"></p>
+
+      <div class="editeur-actions">
+        <button id="btn-editeur-annuler" class="bouton-secondaire" type="button">Annuler</button>
+        <button id="btn-editeur-enregistrer" class="bouton-principal" type="button">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <noscript>
+    <p class="sans-js">Cette roue a besoin de JavaScript pour tourner. Active-le dans ton navigateur.</p>
+  </noscript>
+
+  <script src="js/donnees.js"></script>
+  <script src="js/tirage.js"></script>
+  <script src="js/etat.js"></script>
+  <script src="js/roue.js"></script>
+  <script src="js/effets.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

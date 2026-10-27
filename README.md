@@ -43,6 +43,19 @@ Un Snake classique en vert, version arcade.
 
 Fichier : `snake.html`
 
+## 🎡 Roue des tâches
+
+La roue de la semaine : chacun tourne à son tour et la roue choisit sa tâche.
+
+- 6 tâches, 4 membres, une tâche par personne
+- Tirage honnête, sans remise : une tâche tirée quitte la roue
+- Ordre de passage tournant d'une semaine sur l'autre
+- Tirage le dimanche soir pour la semaine qui commence
+- Son, confettis, bilan de fin de semaine, annulation du dernier tour
+- Tâches modifiables dans la page (5 à 8), semaine conservée dans le navigateur
+
+Fichier : `roue-taches/index.html`
+
 ## Auteur
 
 Marie-Anne Gudet — marie-anne.gudet@astek.net

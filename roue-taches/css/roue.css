@@ -1,0 +1,871 @@
+/* ==========================================================================
+   Roue des tâches — mise en page, roue, pupitre, bilan
+   ========================================================================== */
+
+/* En-tête ---------------------------------------------------------------- */
+
+.entete {
+  position: relative;
+  z-index: 2;
+  width: min(1080px, 100%);
+  margin: 0 auto;
+  padding: 22px 20px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.entete-marque {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.entete-logo {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  font-size: 1.7rem;
+  background: #fff;
+  border: 1px solid var(--trait);
+  border-radius: 18px;
+  box-shadow: var(--ombre-douce);
+}
+
+.entete h1 {
+  margin: 0;
+  font-size: clamp(1.3rem, 2.6vw, 1.6rem);
+  letter-spacing: -0.01em;
+}
+
+.entete-semaine {
+  margin: 1px 0 0;
+  color: var(--encre-douce);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.entete-outils {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge-tour {
+  margin: 0 4px 0 0;
+  padding: 8px 14px;
+  border: 1px solid var(--trait);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--encre-douce);
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.bouton-icone {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  font-size: 1.1rem;
+  background: #fff;
+  border: 1px solid var(--trait);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+}
+
+.bouton-icone:hover {
+  transform: translateY(-2px);
+  background: var(--carte-douce);
+}
+
+.bouton-icone[aria-pressed="false"] {
+  opacity: 0.45;
+}
+
+/* Plateau ---------------------------------------------------------------- */
+
+.plateau {
+  position: relative;
+  z-index: 1;
+  width: min(1080px, 100%);
+  margin: 0 auto;
+  padding: 10px 20px 56px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
+  gap: clamp(20px, 3vw, 40px);
+  align-items: start;
+}
+
+/* La roue ---------------------------------------------------------------- */
+
+.zone-roue {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.roue-cadre {
+  position: relative;
+  width: min(100%, 520px);
+  margin-top: 10px;
+  aspect-ratio: 1;
+}
+
+.roue {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 26px 36px rgba(58, 46, 42, 0.20));
+}
+
+.roue-rendu {
+  animation: apparaitre 0.35s ease-out both;
+}
+
+/* Aiguille */
+
+.aiguille {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  z-index: 3;
+  width: 38px;
+  height: 58px;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 6px 8px rgba(58, 46, 42, 0.30));
+}
+
+.aiguille::before {
+  content: "";
+  position: absolute;
+  inset: 14px 0 0;
+  background: linear-gradient(180deg, var(--corail) 0%, var(--corail-fonce) 100%);
+  clip-path: polygon(50% 100%, 0 0, 100% 0);
+}
+
+.aiguille::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--corail-fonce);
+  transform: translateX(-50%);
+}
+
+.aiguille.vibre {
+  animation: vibrer 0.12s ease-in-out 3;
+}
+
+/* Moyeu */
+
+.moyeu {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 26%;
+  aspect-ratio: 1;
+  font-size: clamp(1.3rem, 4vw, 2rem);
+  background: #fff;
+  border-radius: 50%;
+  box-shadow:
+    0 12px 24px -12px rgba(58, 46, 42, 0.5),
+    inset 0 0 0 6px var(--carte-douce);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.indice {
+  margin: 0;
+  max-width: 30ch;
+  color: var(--encre-douce);
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+/* Pupitre ---------------------------------------------------------------- */
+
+.pupitre {
+  position: sticky;
+  top: 18px;
+  padding: clamp(18px, 2.4vw, 28px);
+  background: var(--carte);
+  border: 1px solid var(--trait);
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre-douce);
+}
+
+.annonce {
+  margin: 0 0 16px;
+  font-size: clamp(1.25rem, 3vw, 1.6rem);
+  font-weight: 800;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.annonce .nom {
+  font-weight: 800;
+}
+
+.annonce-resultat {
+  font-size: clamp(1.15rem, 2.8vw, 1.45rem);
+}
+
+.liste-tours {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.liste-tours:empty {
+  margin-top: 0;
+}
+
+.tour {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 18px minmax(0, 1.15fr);
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: var(--rayon-petit);
+  background: #FFF6F1;
+  background:
+    linear-gradient(0deg, rgba(255, 255, 255, 0.86), rgba(255, 255, 255, 0.86)),
+    var(--couleur-membre, var(--corail));
+  border-left: 4px solid var(--couleur-membre, var(--corail));
+  animation: glisser 0.35s ease-out both;
+}
+
+.tour-avatar {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  font-size: 1.1rem;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px -6px rgba(58, 46, 42, 0.6);
+}
+
+.tour-nom {
+  font-size: 0.9rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tour-fleche {
+  color: var(--encre-pale);
+  font-weight: 700;
+  text-align: center;
+}
+
+.tour-tache {
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.restantes {
+  margin: 16px 0 0;
+  padding-top: 14px;
+  border-top: 1px dashed var(--trait-fort);
+  color: var(--encre-douce);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+/* Bilan ------------------------------------------------------------------ */
+
+.voile {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  overflow-y: auto;
+  padding: 20px;
+  background: rgba(58, 46, 42, 0.42);
+  backdrop-filter: blur(5px);
+  animation: fondu 0.2s ease-out both;
+}
+
+.voile[hidden] {
+  display: none !important;
+}
+
+.bilan {
+  width: min(680px, 100%);
+  max-height: 90vh;
+  margin: auto;
+  overflow: auto;
+  padding: clamp(20px, 3vw, 32px);
+  background: var(--carte);
+  border-radius: 28px;
+  box-shadow: var(--ombre-forte);
+  text-align: center;
+  animation: surgir 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+.bilan-emoji {
+  margin: 0;
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+.bilan h2 {
+  margin: 6px 0 4px;
+  font-size: clamp(1.35rem, 3vw, 1.75rem);
+}
+
+.bilan-sous-titre {
+  margin: 0 0 18px;
+  color: var(--encre-douce);
+  font-size: 0.9rem;
+}
+
+.bilan-grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: 10px;
+}
+
+.bilan-membre {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 10px;
+  border-radius: 18px;
+  background: #FFF6F1;
+  background:
+    linear-gradient(0deg, rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.84)),
+    var(--couleur-membre, var(--corail));
+  border: 1px solid var(--trait);
+}
+
+.bilan-avatar {
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.bilan-nom {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.bilan-tache {
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.bilan-tache.vide {
+  color: var(--encre-pale);
+  font-weight: 600;
+}
+
+.bilan-non-attribuees {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 18px 0 0;
+  color: var(--encre-douce);
+  font-size: 0.85rem;
+}
+
+.bilan-non-attribuees:empty {
+  display: none;
+}
+
+.puce {
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--carte-douce);
+  border: 1px solid var(--trait);
+  color: var(--encre);
+  font-weight: 700;
+  font-size: 0.82rem;
+}
+
+.bilan-actions {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.bilan-actions .bouton-secondaire,
+.bilan-actions .bouton-principal {
+  margin: 0;
+  min-height: 52px;
+  font-size: 0.95rem;
+}
+
+.bilan-actions .bouton-principal {
+  letter-spacing: 0.04em;
+}
+
+/* Confettis -------------------------------------------------------------- */
+
+.confettis {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Animations ------------------------------------------------------------- */
+
+@keyframes apparaitre {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fondu {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes surgir {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes glisser {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes vibrer {
+  0%, 100% { transform: translateX(-50%) rotate(0deg); }
+  50% { transform: translateX(-50%) rotate(-4deg); }
+}
+
+/* Part gagnante (appliquée en SVG) */
+.part-gagnante {
+  filter: brightness(1.12) saturate(1.25) drop-shadow(0 0 10px rgba(255, 255, 255, 0.9));
+  stroke: #3A2E2A;
+  stroke-width: 5;
+  animation: pulser 0.7s ease-in-out 2;
+}
+
+@keyframes pulser {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.72; }
+}
+
+/* Éditeur de tâches ------------------------------------------------------ */
+
+.editeur {
+  width: min(520px, 100%);
+  max-height: 90vh;
+  margin: auto;
+  overflow: auto;
+  padding: clamp(20px, 3vw, 30px);
+  background: var(--carte);
+  border-radius: 26px;
+  box-shadow: var(--ombre-forte);
+  text-align: left;
+  animation: surgir 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+}
+
+.editeur h2 {
+  margin: 0 0 4px;
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  text-align: center;
+}
+
+.editeur-aide {
+  margin: 0 0 16px;
+  color: var(--encre-douce);
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.editeur-liste {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.ligne-tache {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) 40px;
+  align-items: center;
+  gap: 8px;
+}
+
+.champ-emoji,
+.champ-nom {
+  height: 46px;
+  border: 1px solid var(--trait-fort);
+  border-radius: 12px;
+  background: var(--carte-douce);
+  color: var(--encre);
+  font-family: var(--police);
+  font-size: 1rem;
+}
+
+.champ-emoji {
+  padding: 0;
+  text-align: center;
+  font-size: 1.3rem;
+}
+
+.champ-nom {
+  padding: 0 12px;
+  font-weight: 700;
+}
+
+.champ-emoji:focus,
+.champ-nom:focus {
+  background: #fff;
+  border-color: var(--turquoise);
+}
+
+.champ-nom::placeholder {
+  color: var(--encre-pale);
+  font-weight: 600;
+}
+
+.btn-supprimer {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--trait);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--corail-fonce);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.btn-supprimer:hover:not(:disabled) {
+  background: #FFF0F3;
+}
+
+.btn-supprimer:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.editeur-message {
+  min-height: 20px;
+  margin: 4px 0 0;
+  color: var(--encre-douce);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.editeur-message.erreur {
+  color: var(--corail-fonce);
+}
+
+.editeur-actions {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.editeur-actions .bouton-principal,
+.editeur-actions .bouton-secondaire {
+  margin: 0;
+  min-height: 52px;
+  font-size: 0.95rem;
+}
+
+.editeur-actions .bouton-principal {
+  letter-spacing: 0.03em;
+}
+
+/* Panneau de test (?debug=1) --------------------------------------------- */
+
+.debug {
+  position: fixed;
+  left: 12px;
+  bottom: 12px;
+  z-index: 80;
+  max-width: 280px;
+  padding: 10px 12px;
+  background: rgba(58, 46, 42, 0.93);
+  color: #fff;
+  border-radius: 14px;
+  font-size: 0.75rem;
+  box-shadow: var(--ombre-forte);
+}
+
+.debug-titre {
+  margin: 0 0 6px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.65;
+}
+
+.debug-boutons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.debug button {
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.debug button:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+.debug-test {
+  width: 100%;
+  margin-top: 8px;
+  font-weight: 700;
+}
+
+/* Adaptations ------------------------------------------------------------ */
+
+@media (max-width: 860px) {
+  .plateau {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .pupitre {
+    position: static;
+    order: 2;
+  }
+
+  .zone-roue {
+    order: 1;
+  }
+
+  .entete {
+    padding-top: 16px;
+  }
+}
+
+@media (max-width: 430px) {
+  .entete-logo {
+    width: 44px;
+    height: 44px;
+    font-size: 1.4rem;
+  }
+
+  .badge-tour {
+    padding: 7px 11px;
+    font-size: 0.75rem;
+  }
+
+  .bouton-icone {
+    width: 40px;
+    height: 40px;
+  }
+
+  .bilan-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .bilan {
+    padding: 18px 16px;
+    border-radius: 22px;
+  }
+
+  .bilan-emoji {
+    font-size: 1.9rem;
+  }
+
+  .bilan h2 {
+    font-size: 1.2rem;
+  }
+
+  .bilan-sous-titre {
+    margin-bottom: 14px;
+    font-size: 0.8rem;
+  }
+
+  .bilan-membre {
+    gap: 2px;
+    padding: 10px 6px;
+    border-radius: 14px;
+  }
+
+  .bilan-avatar {
+    font-size: 1.4rem;
+  }
+
+  .bilan-nom {
+    font-size: 0.78rem;
+  }
+
+  .bilan-tache {
+    font-size: 0.85rem;
+  }
+
+  .bilan-non-attribuees {
+    margin-top: 14px;
+    font-size: 0.78rem;
+  }
+
+  .bilan-actions {
+    margin-top: 16px;
+  }
+
+  .bilan-actions .bouton-principal,
+  .bilan-actions .bouton-secondaire {
+    min-height: 46px;
+  }
+
+  .tour {
+    grid-template-columns: 30px minmax(0, 1fr) 14px minmax(0, 1fr);
+    gap: 6px;
+    padding: 8px 10px;
+  }
+
+  .tour-avatar {
+    width: 30px;
+    height: 30px;
+    font-size: 1rem;
+  }
+
+  .editeur {
+    padding: 18px 14px;
+    border-radius: 22px;
+  }
+
+  .editeur h2 {
+    font-size: 1.15rem;
+  }
+
+  .editeur-aide {
+    margin-bottom: 12px;
+    font-size: 0.76rem;
+  }
+
+  .editeur-liste {
+    gap: 6px;
+  }
+
+  .ligne-tache {
+    grid-template-columns: 46px minmax(0, 1fr) 38px;
+    gap: 6px;
+  }
+
+  .champ-emoji,
+  .champ-nom {
+    height: 42px;
+  }
+
+  .champ-emoji {
+    font-size: 1.15rem;
+  }
+
+  .champ-nom {
+    padding: 0 10px;
+    font-size: 0.92rem;
+  }
+
+  .btn-supprimer {
+    width: 38px;
+    height: 38px;
+  }
+
+  .editeur-actions {
+    grid-template-columns: 1fr;
+    margin-top: 8px;
+  }
+
+  .editeur-actions .bouton-principal,
+  .editeur-actions .bouton-secondaire {
+    min-height: 48px;
+  }
+
+  .editeur-actions .bouton-principal {
+    order: -1;
+  }
+}
+
+/* Écran court en paysage : la roue passe à côté du pupitre */
+@media (orientation: landscape) and (max-height: 560px) {
+  .roue-cadre {
+    width: min(78vh, 100%);
+  }
+
+  .indice {
+    display: none;
+  }
+}
+
+/* Mouvement réduit ------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .confettis {
+    display: none;
+  }
+}
